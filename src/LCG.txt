@@ -30,4 +30,4 @@ If fPart(I/6)=0 and I<N
 Pause
 End
 Pause
-Disp "SAVED TO L1","AND ʟLCG"
+Disp "SAVED TO L1","AND LIST LCG"

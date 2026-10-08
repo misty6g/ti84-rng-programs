@@ -85,4 +85,4 @@ Pause
 End
 End
 Pause
-Disp "SAVED TO ʟLFSR"
+Disp "SAVED TO LIST","LFSR"

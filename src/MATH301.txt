@@ -34,7 +34,7 @@ If fPart(I/6)=0 and I<N
 Pause
 End
 Pause
-Disp "SAVED TO L1","AND ʟLCG"
+Disp "SAVED TO L1","AND LIST LCG"
 Pause
 Goto MM
 Lbl B
@@ -351,7 +351,7 @@ Pause
 End
 End
 Pause
-Disp "SAVED TO ʟLFSR"
+Disp "SAVED TO LIST","LFSR"
 Pause
 Goto MM
 Lbl Q
