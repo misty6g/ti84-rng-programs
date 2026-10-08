@@ -1,0 +1,38 @@
+ClrHome
+Disp "MOD INVERSE","A^-1 MOD M"
+Input "A=",A
+Input "M=",M
+If M<1 or fPart(M) or fPart(A)
+Then
+Disp "NEED INTEGERS","AND M≥1"
+Stop
+End
+A-M*int(A/M)→A
+If A=0
+Then
+M→G
+Else
+gcd(A,M)→G
+End
+If G≠1
+Then
+Disp "NO INVERSE","GCD(A,M)=",G
+Stop
+End
+0→T
+1→U
+M→R
+A→S
+While S≠0
+int(R/S)→Q
+T-Q*U→V
+U→T
+V→U
+R-Q*S→V
+S→R
+V→S
+End
+If T<0
+T+M→T
+A*T-M*int(A*T/M)→V
+Disp "INVERSE=",T,"CHECK A*INV MOD M",V

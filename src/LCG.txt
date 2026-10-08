@@ -1,0 +1,33 @@
+ClrHome
+Disp "LCG","X=(AX+C) MOD M"
+Input "M=",M
+Input "A=",A
+Input "C=",C
+Input "X0=",X
+Input "COUNT=",N
+If M<1 or N<1 or N>999 or fPart(N)
+Then
+Disp "NEED M≥1 AND","1≤COUNT≤999"
+Stop
+End
+If A*M≥10^(14) or C≥10^(14)
+Then
+Disp "WARNING: A*M BIG","MAY LOSE DIGITS"
+Pause
+End
+seq(0,I,1,N)→L₁
+For(I,1,N)
+A*X+C→X
+X-M*int(X/M)→X
+X→L₁(I)
+End
+L₁→ʟLCG
+ClrHome
+Disp "{I,XI}"
+For(I,1,N)
+Disp {I,L₁(I)}
+If fPart(I/6)=0 and I<N
+Pause
+End
+Pause
+Disp "SAVED TO L1","AND ʟLCG"
