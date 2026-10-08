@@ -1,0 +1,358 @@
+Lbl MM
+ClrHome
+Menu("MATH 301","LCG",A,"HULL-DOBELL",B,"CARMICHAEL",C,"MOD INVERSE",D,"KS UNIFORM",E,"LFSR",F,"QUIT",Q)
+Lbl A
+ClrHome
+Disp "LCG","X=(AX+C) MOD M"
+Input "M=",M
+Input "A=",A
+Input "C=",C
+Input "X0=",X
+Input "COUNT=",N
+If M<1 or N<1 or N>999 or fPart(N)
+Then
+Disp "NEED M≥1 AND","1≤COUNT≤999"
+Stop
+End
+If A*M≥10^(14) or C≥10^(14)
+Then
+Disp "WARNING: A*M BIG","MAY LOSE DIGITS"
+Pause
+End
+seq(0,I,1,N)→L₁
+For(I,1,N)
+A*X+C→X
+X-M*int(X/M)→X
+X→L₁(I)
+End
+L₁→ʟLCG
+ClrHome
+Disp "{I,XI}"
+For(I,1,N)
+Disp {I,L₁(I)}
+If fPart(I/6)=0 and I<N
+Pause
+End
+Pause
+Disp "SAVED TO L1","AND ʟLCG"
+Pause
+Goto MM
+Lbl B
+ClrHome
+Disp "HULL-DOBELL"
+Input "M=",M
+Input "A=",A
+Input "C=",C
+If M<2 or fPart(M) or fPart(A) or fPart(C)
+Then
+Disp "NEED INTEGERS","AND M≥2"
+Stop
+End
+A-1→B
+If C=0
+Then
+M→G
+Else
+gcd(abs(C),M)→G
+End
+(G=1)→P
+{0}→ʟPF
+0→J
+M→N
+1→Q
+2→D
+While D²≤N
+If fPart(N/D)=0
+Then
+J+1→J
+D→ʟPF(J)
+If fPart(B/D)
+0→Q
+While fPart(N/D)=0
+N/D→N
+End
+End
+D+1+(D>2)→D
+End
+If N>1
+Then
+J+1→J
+N→ʟPF(J)
+If fPart(B/N)
+0→Q
+End
+fPart(M/4) or not(fPart(B/4))→R
+ClrHome
+Disp "PRIMES OF M:",ʟPF
+Disp "A-1=",B
+Pause
+ClrHome
+Disp "1)GCD(C,M)=1","  GCD=",G,"  "+sub("FALSETRUE ",1+5P,5)
+Disp "2)EVERY PRIME OF","  M DIVIDES A-1","  "+sub("FALSETRUE ",1+5Q,5)
+Pause
+ClrHome
+Disp "3)IF 4 DIVIDES M","  THEN 4 DIV A-1"
+If fPart(M/4)
+Then
+Disp "  (4 NOT DIV M)"
+Else
+Disp "  (4 DIVIDES M)"
+End
+Disp "  "+sub("FALSETRUE ",1+5R,5)
+If P and Q and R
+Then
+Disp "FULL PERIOD","PERIOD = M =",M
+Else
+Disp "NOT FULL PERIOD","(PERIOD < M)"
+End
+Pause
+Goto MM
+Lbl C
+ClrHome
+Menu("CARMICHAEL","ENTER M",C1,"ENTER FACTORS",C2)
+Lbl C1
+Input "M=",M
+If M<1 or fPart(M)
+Then
+Disp "NEED INTEGER M≥1"
+Stop
+End
+{0}→ʟP
+{0}→ʟE
+0→J
+M→N
+2→D
+While D²≤N
+If fPart(N/D)=0
+Then
+J+1→J
+D→ʟP(J)
+0→K
+While fPart(N/D)=0
+N/D→N
+K+1→K
+End
+K→ʟE(J)
+End
+D+1+(D>2)→D
+End
+If N>1
+Then
+J+1→J
+N→ʟP(J)
+1→ʟE(J)
+End
+Goto C3
+Lbl C2
+ClrHome
+Disp "EG M=2^3*5","PRIMES {2,5}","EXPS {3,1}"
+Input "PRIMES:",ʟP
+Input "EXPONENTS:",ʟE
+dim(ʟP)→J
+If J≠dim(ʟE)
+Then
+Disp "SIZE MISMATCH"
+Stop
+End
+prod(ʟP^ʟE)→M
+Lbl C3
+ClrHome
+If J=0
+Then
+Disp "M=1","LAMBDA(1)=1"
+Else
+J→dim(ʟP)
+J→dim(ʟE)
+seq(0,I,1,J)→ʟLAM
+1→L
+Disp "M=",M,"{P,K,LAMBDA}"
+For(I,1,J)
+ʟP(I)→P
+ʟE(I)→K
+If P=2
+Then
+If K≤2
+Then
+K→Y
+Else
+2^(K-2)→Y
+End
+Else
+P^(K-1)*(P-1)→Y
+End
+Y→ʟLAM(I)
+lcm(L,Y)→L
+Disp {P,K,Y}
+If fPart(I/5)=0 and I<J
+Pause
+End
+Pause
+Disp "LAMBDA(M)=LCM=",L
+End
+Pause
+Goto MM
+Lbl D
+ClrHome
+Disp "MOD INVERSE","A^-1 MOD M"
+Input "A=",A
+Input "M=",M
+If M<1 or fPart(M) or fPart(A)
+Then
+Disp "NEED INTEGERS","AND M≥1"
+Stop
+End
+A-M*int(A/M)→A
+If A=0
+Then
+M→G
+Else
+gcd(A,M)→G
+End
+If G≠1
+Then
+Disp "NO INVERSE","GCD(A,M)=",G
+Else
+0→T
+1→U
+M→R
+A→S
+While S≠0
+int(R/S)→Q
+T-Q*U→V
+U→T
+V→U
+R-Q*S→V
+S→R
+V→S
+End
+If T<0
+T+M→T
+A*T-M*int(A*T/M)→V
+Disp "INVERSE=",T,"CHECK A*INV MOD M",V
+End
+Pause
+Goto MM
+Lbl E
+ClrHome
+Disp "KS TEST UNIFORM","ENTER LIST","EG L1 OR {.1,.5}"
+Input "DATA:",ʟKSR
+dim(ʟKSR)→N
+If min(ʟKSR)<0 or max(ʟKSR)≥1
+Then
+Disp "WARNING: DATA","NOT IN [0,1)"
+Pause
+End
+SortA(ʟKSR)
+seq(I/N,I,1,N)-ʟKSR→ʟDP
+ʟKSR-seq((I-1)/N,I,1,N)→ʟDM
+max(ʟDP)→P
+max(ʟDM)→Q
+max(P,Q)→D
+ClrHome
+Disp "SORTED {I,RI}"
+For(I,1,N)
+Disp {I,ʟKSR(I)}
+If fPart(I/6)=0 and I<N
+Pause
+End
+Pause
+ClrHome
+Disp "N=",N
+Disp "D+=MAX(I/N-RI)",P
+Disp "D-=MAX(RI-(I-1)/N)",Q
+Disp "D=MAX(D+,D-)",D
+Pause
+Goto MM
+Lbl F
+ClrHome
+Menu("LFSR INPUT","TAPS B(N-T)",F1,"POLYNOMIAL",F2)
+Lbl F1
+ClrHome
+Disp "B(N)=XOR OF","B(N-T) FOR TAPS T","EG {3,4}"
+Input "TAPS:",ʟTAP
+If min(ʟTAP)<1 or max(fPart(ʟTAP))
+Then
+Disp "TAPS MUST BE","INTEGERS ≥1"
+Stop
+End
+Goto F3
+Lbl F2
+ClrHome
+Disp "POLY EXPONENTS","X^4+X+1","= {4,1,0}"
+Input "EXPS:",ʟTAP
+SortD(ʟTAP)
+If min(ʟTAP)≠0 or dim(ʟTAP)<2
+Then
+Disp "NEED CONSTANT","TERM (0)"
+Stop
+End
+ʟTAP(1)-seq(ʟTAP(I),I,2,dim(ʟTAP))→ʟTAP
+Disp "TAPS:",ʟTAP
+Lbl F3
+max(ʟTAP)→K
+If K>40
+Then
+Disp "MAX DEGREE 40"
+Stop
+End
+Disp "SEED B1..BK","K=",K
+Input "SEED:",ʟSEED
+If dim(ʟSEED)≠K
+Then
+Disp "SEED NEEDS",K,"BITS"
+Stop
+End
+2^(K-ʟTAP)→ʟW
+2^(K-1)→H
+sum(ʟSEED*2^(seq(I-1,I,1,K)))→S
+S→V
+0→P
+ClrHome
+Disp "FINDING PERIOD"
+Repeat V=S
+sum(int(V/ʟW)-2*int(V/(2*ʟW)))→B
+B-2*int(B/2)→B
+int(V/2)+B*H→V
+P+1→P
+End
+ClrHome
+Disp "PERIOD=",P,"MAX=2^K-1=",2^K-1
+If P=2^K-1
+Disp "MAXIMAL PERIOD!"
+Input "HOW MANY BITS?",N
+If N<1
+Goto MM
+min(N,999)→N
+seq(0,I,1,N)→ʟLFSR
+S→V
+For(I,1,N)
+If I≤K
+Then
+ʟSEED(I)→B
+Else
+sum(int(V/ʟW)-2*int(V/(2*ʟW)))→B
+B-2*int(B/2)→B
+int(V/2)+B*H→V
+End
+B→ʟLFSR(I)
+End
+ClrHome
+""→Str1
+0→J
+For(I,1,N)
+Str1+sub("01",ʟLFSR(I)+1,1)→Str1
+If fPart(I/16)=0 or I=N
+Then
+Disp Str1
+""→Str1
+J+1→J
+If fPart(J/7)=0 and I<N
+Pause
+End
+End
+Pause
+Disp "SAVED TO ʟLFSR"
+Pause
+Goto MM
+Lbl Q
+ClrHome

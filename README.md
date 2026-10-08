@@ -5,6 +5,8 @@ TI-BASIC programs for TI-84 Plus / Plus CE. Sources are in `src/`, ready-to-send
 Send `bin/*.8xp` to the calculator with TI Connect CE, or type in the `src/*.txt` code by hand.
 Rebuild after editing: `pip install tivars && python3 build.py`.
 
+**`MATH301` combines all six into one program with a menu.** Send just `bin/MATH301.8xp` if you only want one program. After each tool finishes, press ENTER to return to the menu.
+
 | Program | Inputs | Output |
 |---|---|---|
 | `LCG` | M, A, C, X0, COUNT (≤999) | X1..Xn on screen, saved to `L1` and `ʟLCG` |
