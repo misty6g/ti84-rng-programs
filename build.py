@@ -10,6 +10,8 @@ out.mkdir(exist_ok=True)
 for src in sorted((root / "src").glob("*.txt")):
     name = src.stem.upper()
     prog = TIProgram(name=name)
-    prog.load_string(src.read_text().rstrip("\n"))
+    # tivars only recognizes the Pause token as "Pause " (with a trailing space)
+    lines = ["Pause " if l.strip() == "Pause" else l for l in src.read_text().rstrip("\n").splitlines()]
+    prog.load_string("\n".join(lines))
     prog.save(str(out / f"{name}.8xp"))
     print(f"{name}: {len(prog.bytes())} bytes")
