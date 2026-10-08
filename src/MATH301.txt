@@ -12,6 +12,7 @@ DelVar ʟDP
 DelVar ʟDM
 DelVar ʟLFSR
 DelVar Str1
+DelVar Str2
 ClrHome
 Menu("MATH 301","LCG",A,"HULL-DOBELL",B,"CARMICHAEL",C,"MOD INVERSE",D,"KS UNIFORM",E,"LFSR",F,"QUIT",Q)
 Lbl A
@@ -326,7 +327,6 @@ If N<1
 Goto MM
 ClrHome
 S→V
-""→Str1
 0→J
 For(I,1,N)
 If I≤K
@@ -337,11 +337,21 @@ sum(int(V/ʟW)-2*int(V/(2*ʟW)))→B
 B-2*int(B/2)→B
 int(V/2)+B*H→V
 End
-Str1+sub("01",B+1,1)→Str1
+If B
+Then
+"1"→Str2
+Else
+"0"→Str2
+End
+If fPart((I-1)/16)=0
+Then
+Str2→Str1
+Else
+Str1+Str2→Str1
+End
 If fPart(I/16)=0 or I=N
 Then
 Disp Str1
-""→Str1
 J+1→J
 If fPart(J/7)=0 and I<N
 Pause
