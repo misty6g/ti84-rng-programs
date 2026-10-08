@@ -1,4 +1,17 @@
 Lbl MM
+DelVar ʟPF
+DelVar ʟP
+DelVar ʟE
+DelVar ʟKSR
+DelVar ʟTAP
+DelVar ʟW
+DelVar ʟSEED
+DelVar ʟLCG
+DelVar ʟLAM
+DelVar ʟDP
+DelVar ʟDM
+DelVar ʟLFSR
+DelVar Str1
 ClrHome
 Menu("MATH 301","LCG",A,"HULL-DOBELL",B,"CARMICHAEL",C,"MOD INVERSE",D,"KS UNIFORM",E,"LFSR",F,"QUIT",Q)
 Lbl A
@@ -9,9 +22,9 @@ Input "A=",A
 Input "C=",C
 Input "X0=",X
 Input "COUNT=",N
-If M<1 or N<1 or N>999 or fPart(N)
+If M<1 or N<1 or fPart(N)
 Then
-Disp "NEED M≥1 AND","1≤COUNT≤999"
+Disp "NEED M≥1 AND","COUNT≥1"
 Stop
 End
 If A*M≥10^(14) or C≥10^(14)
@@ -19,22 +32,15 @@ Then
 Disp "WARNING: A*M BIG","MAY LOSE DIGITS"
 Pause
 End
-seq(0,I,1,N)→L₁
-For(I,1,N)
-A*X+C→X
-X-M*int(X/M)→X
-X→L₁(I)
-End
-L₁→ʟLCG
 ClrHome
 Disp "{I,XI}"
 For(I,1,N)
-Disp {I,L₁(I)}
+A*X+C→X
+X-M*int(X/M)→X
+Disp {I,X}
 If fPart(I/6)=0 and I<N
 Pause
 End
-Pause
-Disp "SAVED TO L1","AND LIST LCG"
 Pause
 Goto MM
 Lbl B
@@ -163,7 +169,6 @@ Disp "M=1","LAMBDA(1)=1"
 Else
 J→dim(ʟP)
 J→dim(ʟE)
-seq(0,I,1,J)→ʟLAM
 1→L
 Disp "M=",M,"{P,K,LAMBDA}"
 For(I,1,J)
@@ -180,7 +185,6 @@ End
 Else
 P^(K-1)*(P-1)→Y
 End
-Y→ʟLAM(I)
 lcm(L,Y)→L
 Disp {P,K,Y}
 If fPart(I/5)=0 and I<J
@@ -243,10 +247,8 @@ Disp "WARNING: DATA","NOT IN [0,1)"
 Pause
 End
 SortA(ʟKSR)
-seq(I/N,I,1,N)-ʟKSR→ʟDP
-ʟKSR-seq((I-1)/N,I,1,N)→ʟDM
-max(ʟDP)→P
-max(ʟDM)→Q
+max(seq(I/N,I,1,N)-ʟKSR)→P
+max(ʟKSR-seq((I-1)/N,I,1,N))→Q
 max(P,Q)→D
 ClrHome
 Disp "SORTED {I,RI}"
@@ -322,9 +324,10 @@ Disp "MAXIMAL PERIOD!"
 Input "HOW MANY BITS?",N
 If N<1
 Goto MM
-min(N,999)→N
-seq(0,I,1,N)→ʟLFSR
+ClrHome
 S→V
+""→Str1
+0→J
 For(I,1,N)
 If I≤K
 Then
@@ -334,13 +337,7 @@ sum(int(V/ʟW)-2*int(V/(2*ʟW)))→B
 B-2*int(B/2)→B
 int(V/2)+B*H→V
 End
-B→ʟLFSR(I)
-End
-ClrHome
-""→Str1
-0→J
-For(I,1,N)
-Str1+sub("01",ʟLFSR(I)+1,1)→Str1
+Str1+sub("01",B+1,1)→Str1
 If fPart(I/16)=0 or I=N
 Then
 Disp Str1
@@ -350,8 +347,6 @@ If fPart(J/7)=0 and I<N
 Pause
 End
 End
-Pause
-Disp "SAVED TO LIST","LFSR"
 Pause
 Goto MM
 Lbl Q
