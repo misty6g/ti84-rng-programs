@@ -1,3 +1,4 @@
+0→θ
 Lbl MM
 DelVar ʟPF
 DelVar ʟP
@@ -11,10 +12,33 @@ DelVar ʟLAM
 DelVar ʟDP
 DelVar ʟDM
 DelVar ʟLFSR
+DelVar ʟOUT
+DelVar ʟPRB
+DelVar ʟCDF
+DelVar ʟARP
+DelVar ʟARQ
+DelVar ʟRAT
+DelVar ʟALP
+DelVar ʟALO
+DelVar ʟALR
+DelVar ʟALI
+DelVar ʟALJ
+DelVar ʟALQ
+DelVar ʟALC
 DelVar Str1
 DelVar Str2
 ClrHome
-Menu("MATH 301","LCG",A,"HULL-DOBELL",B,"CARMICHAEL",C,"MOD INVERSE",D,"KS UNIFORM",E,"LFSR",F,"QUIT",Q)
+If θ=1
+Goto R
+If θ=2
+Goto G
+Menu("MATH 301","RNG TOOLS",R,"QUIZ 4",G,"QUIT",Q)
+Lbl R
+1→θ
+Menu("RNG TOOLS","LCG",A,"HULL-DOBELL",B,"CARMICHAEL",C,"MOD INVERSE",D,"KS UNIFORM",E,"LFSR",F,"BACK",T0)
+Lbl T0
+0→θ
+Goto MM
 Lbl A
 ClrHome
 Disp "LCG","X=(AX+C) MOD M"
@@ -357,6 +381,306 @@ If fPart(J/7)=0 and I<N
 Pause
 End
 End
+Pause
+Goto MM
+Lbl G
+2→θ
+Menu("QUIZ 4","GEN INVERSE",G1,"ACCEPT-REJECT",G2,"POISSON INV",G3,"BINOMIAL INV",G4,"ALIAS SETUP",G5,"BACK",T0,"QUIT",Q)
+Lbl G1
+ClrHome
+Disp "INVERSE TRANSFRM","EG OUTCOMES","{0,1,2,3}"
+Input "OUTCOMES:",ʟOUT
+Input "PROBS:",ʟPRB
+Input "U=",U
+dim(ʟOUT)→N
+If N≠dim(ʟPRB)
+Then
+Disp "SIZE MISMATCH"
+Stop
+End
+If min(ʟPRB)<0 or U<0 or U≥1
+Then
+Disp "NEED PROBS≥0","AND 0≤U<1"
+Stop
+End
+sum(ʟPRB)→S
+If abs(S-1)>10^(⁻9)
+Then
+Disp "WARNING: SUM=",S
+Pause
+End
+cumSum(ʟPRB)→ʟCDF
+ClrHome
+Disp "{XJ,PJ,F(J)}"
+For(I,1,N)
+Disp {ʟOUT(I),round(ʟPRB(I),4),round(ʟCDF(I),4)}
+If fPart((I+1)/7)=0 and I<N
+Pause
+End
+Pause
+min(N,1+sum(ʟCDF≤U))→J
+0→L
+If J>1
+ʟCDF(J-1)→L
+ClrHome
+Disp "U=",U,"F(J-1)≤U<F(J)","{J,F(J-1),F(J)}",{J,round(L,4),round(ʟCDF(J),4)},"X=XJ=",ʟOUT(J)
+Pause
+Goto MM
+Lbl G2
+ClrHome
+Disp "ACCEPT-REJECT","TARGET PJ","REFERENCE QJ"
+Input "OUTCOMES:",ʟOUT
+Input "PJ:",ʟARP
+Input "QJ:",ʟARQ
+dim(ʟOUT)→N
+If N≠dim(ʟARP) or N≠dim(ʟARQ)
+Then
+Disp "SIZE MISMATCH"
+Stop
+End
+If min(ʟARP)<0 or min(ʟARQ)<0 or max((ʟARP) and not(ʟARQ))
+Then
+Disp "NEED P,Q≥0 AND","Q>0 WHEREVER P>0"
+Stop
+End
+ʟARP/(ʟARQ+not(ʟARQ))→ʟRAT
+max(ʟRAT)→M
+ClrHome
+Disp "{XJ,PJ/QJ}"
+For(I,1,N)
+Disp {ʟOUT(I),round(ʟRAT(I),4)}
+If fPart((I+1)/7)=0 and I<N
+Pause
+End
+Pause
+ClrHome
+Disp "MIN C=MAX PJ/QJ",M
+Input "C (0=MIN)=",C
+If C=0
+M→C
+If C<M-10^(⁻9)
+Then
+Disp "WARNING: C<MIN","PJ≤C*QJ FAILS"
+Pause
+End
+ClrHome
+Disp "C=",C,"1/C=P(ACCEPT)",1/C,"AVG ATTEMPTS=C",C
+Pause
+0→K
+Repeat A
+ClrHome
+Disp "Y NOT IN LIST","EXITS"
+Input "CANDIDATE Y=",Y
+1→A
+If sum(ʟOUT=Y)=1
+Then
+sum((ʟOUT=Y)*seq(I,I,1,N))→J
+Input "U=",U
+K+1→K
+ʟRAT(J)/C→T
+(U<T)→A
+ClrHome
+Disp "T=PY/(C*QY)",T,"U=",U
+If A
+Then
+Disp "U<T ACCEPT X=",Y,"TRIES=",K
+Else
+Disp "U≥T REJECT"
+End
+Pause
+End
+End
+Goto MM
+Lbl G3
+ClrHome
+Disp "POISSON INVERSE","P0=E^(-LAMBDA)","PI+1=PI*LAMBDA","     /(I+1)"
+Input "LAMBDA=",L
+Input "U=",U
+If L≤0 or L>200 or U<0 or U≥1
+Then
+Disp "NEED 0<LAMBDA","≤200, 0≤U<1"
+Stop
+End
+𝑒^(⁻L)→P
+P→F
+0→I
+ClrHome
+Disp "{I,PI,F(I)}",{I,round(P,4),round(F,4)}
+2→R
+While U≥F and I<999
+L*P/(I+1)→P
+F+P→F
+I+1→I
+Disp {I,round(P,4),round(F,4)}
+R+1→R
+If fPart(R/7)=0 and U≥F
+Pause
+End
+Pause
+ClrHome
+Disp "U=",U,"F(X-1)≤U<F(X)","{X,F(X-1),F(X)}",{I,round(F-P,4),round(F,4)},"X=",I
+Pause
+Goto MM
+Lbl G4
+ClrHome
+Disp "BINOMIAL INVERSE","P0=(1-P)^N","PI+1=PI*C(N-I)","     /(I+1)","C=P/(1-P)"
+Input "N=",N
+Input "P=",P
+Input "U=",U
+If N<1 or fPart(N) or P≤0 or P≥1 or U<0 or U≥1
+Then
+Disp "NEED INTEGER N≥1","0<P<1, 0≤U<1"
+Stop
+End
+P/(1-P)→C
+(1-P)^N→Q
+If Q=0
+Then
+Disp "(1-P)^N TOO","SMALL: UNDERFLOW"
+Stop
+End
+Q→F
+0→I
+ClrHome
+Disp "C=P/(1-P)=",C,"{I,PI,F(I)}",{I,round(Q,4),round(F,4)}
+4→R
+While U≥F and I<N
+C*(N-I)/(I+1)*Q→Q
+F+Q→F
+I+1→I
+Disp {I,round(Q,4),round(F,4)}
+R+1→R
+If fPart(R/7)=0 and U≥F and I<N
+Pause
+End
+Pause
+ClrHome
+Disp "U=",U,"F(X-1)≤U<F(X)","{X,F(X-1),F(X)}",{I,round(F-Q,4),round(F,4)},"X=",I
+Pause
+Goto MM
+Lbl G5
+ClrHome
+Disp "ALIAS SETUP","VALUES 1..N","EG {.2,.5,.3}"
+Input "PROBS:",ʟALP
+dim(ʟALP)→N
+If N<2 or min(ʟALP)<0 or abs(sum(ʟALP)-1)>10^(⁻9)
+Then
+Disp "NEED N≥2 PROBS","≥0 SUMMING TO 1"
+Stop
+End
+ʟALP→ʟALO
+seq(1,I,1,N)→ʟALR
+N-1→dim(ʟALI)
+N-1→dim(ʟALJ)
+N-1→dim(ʟALQ)
+N→K
+0→M
+While K>2
+M+1→M
+ClrHome
+Disp "STEP",M,"{J,PJ} REMAINING"
+3→R
+For(I,1,N)
+If ʟALR(I)
+Then
+Disp {I,round(ʟALP(I),4)}
+R+1→R
+If fPart(R/7)=0
+Pause
+End
+End
+Pause
+1/(K-1)→T
+0→A
+0→B
+For(I,1,N)
+If ʟALR(I)
+Then
+If A=0
+I→A
+If ʟALP(I)<ʟALP(A)
+I→A
+If B=0
+I→B
+If ʟALP(I)≥ʟALP(B)
+I→B
+End
+End
+ClrHome
+Disp "NEED PI≤1/(K-1)","PI+PJ≥1/(K-1)","1/(K-1)=",T,"SUGGEST {I,J}",{A,B}
+Repeat V
+Input "I=",I
+Input "J=",J
+0→V
+If I≥1 and I≤N and J≥1 and J≤N and I≠J and not(fPart(I)) and not(fPart(J))
+Then
+If ʟALR(I) and ʟALR(J)
+Then
+(ʟALP(I)≤T+10^(⁻12) and ʟALP(I)+ʟALP(J)≥T-10^(⁻12))→V
+End
+End
+If not(V)
+Disp "INVALID, RETRY"
+End
+min(1,(K-1)*ʟALP(I))→X
+I→ʟALI(M)
+J→ʟALJ(M)
+X→ʟALQ(M)
+ʟALP(J)→Y
+(K-1)/(K-2)*ʟALP→ʟALP
+((K-1)*Y-1+X)/(K-2)→ʟALP(J)
+If abs(ʟALP(J))<10^(⁻12)
+0→ʟALP(J)
+0→ʟALP(I)
+0→ʟALR(I)
+K-1→K
+ClrHome
+Disp "Q FOR STEP",M,"{VALUE,Q}",{I,round(X,4)},{J,round(1-X,4)},"WEIGHT 1/(N-1)"
+Pause
+End
+M+1→M
+0→A
+For(I,1,N)
+If ʟALR(I)
+Then
+If A
+Then
+I→B
+Else
+I→A
+End
+End
+End
+ʟALP(A)/(ʟALP(A)+ʟALP(B))→X
+A→ʟALI(M)
+B→ʟALJ(M)
+X→ʟALQ(M)
+ClrHome
+Disp "STEP",M,"LAST 2 VALUES","ARE Q ITSELF","{VALUE,Q}",{A,round(X,4)},{B,round(1-X,4)}
+Pause
+ClrHome
+Disp "P=SUM Q(M)/(N-1)","{M,VALUE,Q}"
+2→R
+For(M,1,N-1)
+Disp {M,ʟALI(M),round(ʟALQ(M),4)},{M,ʟALJ(M),round(1-ʟALQ(M),4)}
+R+2→R
+If R≥7 and M<N-1
+Then
+Pause
+0→R
+End
+End
+Pause
+seq(0,I,1,N)→ʟALC
+For(M,1,N-1)
+ʟALI(M)→I
+ʟALJ(M)→J
+ʟALC(I)+ʟALQ(M)→ʟALC(I)
+ʟALC(J)+1-ʟALQ(M)→ʟALC(J)
+End
+max(abs(ʟALC/(N-1)-ʟALO))→E
+ClrHome
+Disp "CHECK: MAX ERROR","SUM Q/(N-1) VS P",E
 Pause
 Goto MM
 Lbl Q
