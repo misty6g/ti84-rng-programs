@@ -422,6 +422,12 @@ min(N,1+sum(ʟCDF≤U))→J
 0→L
 If J>1
 ʟCDF(J-1)→L
+If U≥ʟCDF(N)
+Then
+ClrHome
+Disp "U≥F(N)=SUM","NO INTERVAL FITS","CHECK PROBS"
+Pause
+End
 ClrHome
 Disp "U=",U,"F(J-1)≤U<F(J)","{J,F(J-1),F(J)}",{J,round(L,4),round(ʟCDF(J),4)},"X=XJ=",ʟOUT(J)
 Pause
@@ -443,6 +449,11 @@ Then
 Disp "NEED P,Q≥0 AND","Q>0 WHEREVER P>0"
 Stop
 End
+If abs(sum(ʟARP)-1)>10^(⁻9) or abs(sum(ʟARQ)-1)>10^(⁻9)
+Then
+Disp "WARNING: P OR Q","SUM IS NOT 1"
+Pause
+End
 ʟARP/(ʟARQ+not(ʟARQ))→ʟRAT
 max(ʟRAT)→M
 ClrHome
@@ -458,6 +469,11 @@ Disp "MIN C=MAX PJ/QJ",M
 Input "C (0=MIN)=",C
 If C=0
 M→C
+If C≤0
+Then
+Disp "NEED C>0"
+Stop
+End
 If C<M-10^(⁻9)
 Then
 Disp "WARNING: C<MIN","PJ≤C*QJ FAILS"
@@ -580,12 +596,14 @@ M+1→M
 ClrHome
 Disp "STEP",M,"{J,PJ} REMAINING"
 3→R
+0→S
 For(I,1,N)
 If ʟALR(I)
 Then
 Disp {I,round(ʟALP(I),4)}
 R+1→R
-If fPart(R/7)=0
+S+1→S
+If fPart(R/7)=0 and S<K
 Pause
 End
 End
@@ -629,7 +647,7 @@ X→ʟALQ(M)
 ʟALP(J)→Y
 (K-1)/(K-2)*ʟALP→ʟALP
 ((K-1)*Y-1+X)/(K-2)→ʟALP(J)
-If abs(ʟALP(J))<10^(⁻12)
+If ʟALP(J)<10^(⁻11)
 0→ʟALP(J)
 0→ʟALP(I)
 0→ʟALR(I)
